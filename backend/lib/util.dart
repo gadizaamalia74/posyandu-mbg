@@ -63,6 +63,8 @@ int usiaBulan(String tanggalLahir, [DateTime? now]) {
 }
 
 /// Status gizi sederhana, sama dengan penimbangan.php lama.
+/// CATATAN: Ini hanya placeholder berbasis BB mutlak tanpa mempertimbangkan usia/jenis kelamin.
+/// Untuk akurasi klinis, perlu tabel Z-score WHO (BB/U, TB/U, BB/TB) per usia dan jenis kelamin.
 String statusGizi(double bb) {
   if (bb < 5) return 'Gizi Buruk';
   if (bb < 7) return 'Gizi Kurang';
@@ -70,12 +72,17 @@ String statusGizi(double bb) {
 }
 
 /// Jadwal imunisasi standar Kemenkes: [id_vaksin, nama, usia_min]
+/// Jadwal imunisasi standar Kemenkes: [id_vaksin, nama, usia_min_bulan]
+/// Catatan: id_vaksin di sini bukan id dari tabel vaksin di DB, melainkan
+/// kode unik per-dosis untuk logika "sudah/belum" di portal ibu.
+/// Dibedakan tiap dosis agar Set sudah_imunisasi tidak menganggap dosis 2&3
+/// otomatis selesai ketika dosis 1 sudah ada.
 const jadwalKemenkes = <List<Object>>[
   ['HB01', 'Hepatitis B (HB-0)', 0],
   ['BC01', 'BCG + Polio 1', 1],
   ['DH11', 'DPT-HB-HiB 1 + Polio 2', 2],
-  ['DH11', 'DPT-HB-HiB 2 + Polio 3', 3],
-  ['DH11', 'DPT-HB-HiB 3 + Polio 4', 4],
+  ['DH12', 'DPT-HB-HiB 2 + Polio 3', 3],
+  ['DH13', 'DPT-HB-HiB 3 + Polio 4', 4],
   ['IP01', 'IPV (Polio Suntik)', 4],
   ['CM01', 'Campak/MR', 9],
   ['DH02', 'DPT-HB-HiB (Lanjutan)', 18],

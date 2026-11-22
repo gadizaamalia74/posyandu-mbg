@@ -163,7 +163,10 @@ Router buildApi() {
   }));
 
   r.delete('/api/jadwal/<id>', admin((req, s) async {
-    await Db.exec('DELETE FROM jadwal WHERE id=:i', {'i': toInt(req.params['id'])});
+    final id = toInt(req.params['id']);
+    // Hapus konfirmasi kehadiran terkait terlebih dahulu (FK constraint)
+    await Db.exec('DELETE FROM konfirmasi_kehadiran WHERE jadwal_id=:i', {'i': id});
+    await Db.exec('DELETE FROM jadwal WHERE id=:i', {'i': id});
     return jsonResponse({'message': 'Jadwal berhasil dihapus.'});
   }));
 
